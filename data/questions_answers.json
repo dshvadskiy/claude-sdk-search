@@ -1,0 +1,42 @@
+[
+    {
+      "question": "What foundational shift in AI necessitated the evolution of prompt engineering into the formal discipline of Context Engineering?",
+      "answer": "The necessity arose because Large Language Models (LLMs) have evolved from simple instruction-following systems into the **core reasoning engines of complex applications** [1]. This shift demanded more sophisticated methods for designing and managing their informational payloads, leading to the formal discipline of Context Engineering [1, 2]. (Source: 1 Introduction, 3 Why Context Engineering)"
+    },
+    {
+      "question": "How does the target optimization complexity, denoted as $F^*$, differ fundamentally between traditional prompt engineering and Context Engineering?",
+      "answer": "For traditional prompt engineering, the complexity involves a manual or automated search over a simple string space, where the target is maximizing output probability given a static string prompt ($\\arg \\max_{prompt} P_{\\theta}(Y|prompt)$) [3]. Context Engineering, however, involves **system-level optimization** of $F^* = \\arg \\max_F E_{\\tau\\sim T} [Reward(P_{\\theta}(Y|C_F (\\tau)), Y^*_{\\tau})]$, where F represents a set of complex context functions like Assembly, Retrieval, and Selection [3]. (Source: 3.1 Definition of Context Engineering)"
+    },
+    {
+      "question": "According to the unified taxonomic framework presented, what are the four main high-level categories organizing the field of Context Engineering?",
+      "answer": "The unified taxonomic framework categorizes Context Engineering into **foundational components, system implementations, evaluation methodologies, and future directions** [4, 5]. (Source: Figure 1, 8 Conclusion)"
+    },
+    {
+      "question": "What core area of model knowledge retrieval does External Knowledge Retrieval primarily address, and what are examples of external information sources used?",
+      "answer": "External knowledge retrieval addresses the **fundamental limitations of parametric knowledge** stored in the model's parameters [6]. It allows for dynamic access to external information sources including **databases, knowledge graphs, and document collections** [6]. (Source: 4.1.2 External Knowledge Retrieval)"
+    },
+    {
+      "question": "What are the three specialized Retrieval-Augmented Generation (RAG) system types discussed under the System Implementations heading?",
+      "answer": "The three specialized RAG system types discussed are **Modular RAG Architectures, Agentic RAG Systems, and Graph-Enhanced RAG** [7]. (Source: 5 System Implementations)"
+    },
+    {
+      "question": "What specific feature of RAG combines the model's learned knowledge with external data, and what is the resulting efficiency benefit?",
+      "answer": "Retrieval-Augmented Generation (RAG) **combines parametric knowledge** stored in model parameters **with non-parametric information** retrieved from external sources [6]. A key benefit is that this approach enables access to current, domain-specific knowledge while **maintaining parameter efficiency** [6]. (Source: Retrieval-Augmented Generation Fundamentals)"
+    },
+    {
+      "question": "Identify three advanced reasoning frameworks mentioned within the Context Generation and Retrieval foundational component area.",
+      "answer": "The cited reasoning frameworks within this area include **Chain-of-Thought (CoT)** [8], **Zero-shot CoT** [8], **Tree-of-Thoughts (ToT)** [8], **Graph of Thoughts (GoT)** [8, 9], **Self-consistency** [8], and **ReAct** [8]. (Source: 4.1.1 Prompt Engineering and Context Generation)"
+    },
+    {
+      "question": "In the comparison between Prompt Engineering and Context Engineering, how do they differ regarding the management of their internal state?",
+      "answer": "Prompt Engineering is described as primarily **stateless** [3]. Context Engineering, conversely, is **inherently stateful**, utilizing explicit components for managing context memory ($c_{mem}$) and context state ($c_{state}$) [3]. (Source: 3.1 Definition of Context Engineering)"
+    },
+    {
+      "question": "Which specific RAG-related toolkit is noted for its modularity, and how many core modules and subcomponents does it feature?",
+      "answer": "The specialized modular toolkit mentioned is **FlashRAG** [6]. It provides a modular implementation featuring **5 core modules and 16 subcomponents**, enabling the independent adjustment and combination of pipeline elements [10]. (Source: 5.1 Retrieval-Augmented Generation)"
+    },
+    {
+      "question": "When evaluating long context processing, what specialized paradigm is used to test a model's ability to retrieve a piece of information deliberately hidden within a lengthy input?",
+      "answer": "The specialized method used for evaluating models' ability to retrieve specific information embedded within long contexts is the **“needle in a haystack” evaluation paradigm** [11]. (Source: 6.2.1 Evaluation Methodologies)"
+    }
+  ]
