@@ -66,7 +66,7 @@ async def with_tools_example(filename, query_text):
 
 async def process_questions_json(input_file, questions_file):
     """Process a JSON file with questions and generate results with Claude answers."""
-    with open(input_file, 'r') as f:
+    with open(questions_file, 'r') as f:
         questions_data = json.load(f)
     
     results = []
@@ -78,7 +78,7 @@ async def process_questions_json(input_file, questions_file):
         print(f"{'='*60}")
         
         # Get Claude's answer
-        claude_answer = await get_claude_answer(questions_file, item['question'])
+        claude_answer = await get_claude_answer(input_file, item['question'])
         
         # Create result entry
         result_item = {
@@ -89,7 +89,7 @@ async def process_questions_json(input_file, questions_file):
         results.append(result_item)
     
     # Write results to output file
-    output_file = input_file.replace('.json', '_results.json')
+    output_file = questions_file.replace('.json', '_results.json')
     with open(output_file, 'w') as f:
         json.dump(results, f, indent=2)
     
@@ -135,14 +135,10 @@ async def get_claude_answer(filename, query_text):
     return ' '.join(last_message_text) if last_message_text else "No answer generated"
 
 @click.command()
-@click.argument("input_file", metavar="<input_file>")
-@click.argument("questions_file", metavar="<questions_file>")
+@click.option("-i", "--input-file", required=True, help="JSON file containing questions and expected answers")
+@click.option("-q", "--questions-file", required=True, help="Source file to query for answers")
 def main(input_file, questions_file):
-    """Process a JSON file with questions and generate results with Claude answers.
-    
-    INPUT_FILE: JSON file containing questions and expected answers
-    QUESTIONS_FILE: Source file to query for answers
-    """
+    """Process a JSON file with questions and generate results with Claude answers."""
     async def run_processing():
         time_start = time.time()
         await process_questions_json(input_file, questions_file)
