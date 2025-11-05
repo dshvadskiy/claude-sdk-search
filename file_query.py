@@ -17,7 +17,7 @@ from claude_agent_sdk import (
     query,
 )
 
-async def with_tools_example(filename, query_text):
+async def with_tools_example(source_dir, pattern, query_text):
     """Example using file tools."""
     # print("=== With File Tools Example ===")
 
@@ -27,12 +27,14 @@ async def with_tools_example(filename, query_text):
         model="sonnet",
     )
 
-    prompt = f"Using file {filename} as a source, answer the question: {query_text}"
+    prompt = f"""Using files in directory '{source_dir}' matching pattern '{pattern}', answer the question: {query_text}
+
+Use the Glob tool to find files matching the pattern, then use Read or Grep to search for relevant information."""
 
     tools_used = False
     final_text_blocks = []
     last_message_text = []
-    
+
     async for message in query(
         prompt=prompt,
         options=options,
@@ -50,36 +52,36 @@ async def with_tools_example(filename, query_text):
                     print(f"   Result: {block.content}")
                     if block.is_error:
                         print(f"   ❌ Error: {block.content}")
-            
+
             # Only keep text from the last message (final answer)
             if current_message_text:
                 last_message_text = current_message_text
-                
+
         elif isinstance(message, ResultMessage) and message.total_cost_usd > 0:
             print(f"\nCost: ${message.total_cost_usd:.4f}")
             print(f"\nUsage: {message.usage}")
-    
+
     # Only show text from the very last message (final answer)
     if last_message_text:
         print(f"\nClaude: {' '.join(last_message_text)}")
     print()
 
-async def process_questions_json(input_file, questions_file):
+async def process_questions_json(input_file, source_dir, pattern):
     """Process a JSON file with questions and generate results with Claude answers."""
-    with open(questions_file, 'r') as f:
+    with open(input_file, 'r') as f:
         questions_data = json.load(f)
-    
+
     results = []
-    
+
     for i, item in enumerate(questions_data):
         print(f"\n{'='*60}")
         print(f"Processing question {i+1}/{len(questions_data)}")
         print(f"Question: {item['question']}")
         print(f"{'='*60}")
-        
+
         # Get Claude's answer
-        claude_answer = await get_claude_answer(input_file, item['question'])
-        
+        claude_answer = await get_claude_answer(source_dir, pattern, item['question'])
+
         # Create result entry
         result_item = {
             "question": item['question'],
@@ -87,15 +89,15 @@ async def process_questions_json(input_file, questions_file):
             "claude_answer": claude_answer
         }
         results.append(result_item)
-    
+
     # Write results to output file
-    output_file = questions_file.replace('.json', '_results.json')
+    output_file = input_file.replace('.json', '_results.json')
     with open(output_file, 'w') as f:
         json.dump(results, f, indent=2)
-    
+
     print(f"\nResults saved to: {output_file}")
 
-async def get_claude_answer(filename, query_text):
+async def get_claude_answer(source_dir, pattern, query_text):
     """Get Claude's answer for a single question."""
     options = ClaudeAgentOptions(
         allowed_tools=["Read", "Write", "Grep", "Glob"],
@@ -103,11 +105,13 @@ async def get_claude_answer(filename, query_text):
         model="sonnet",
     )
 
-    prompt = f"Using file {filename} as a source, answer the question: {query_text}"
+    prompt = f"""Using files in directory '{source_dir}' matching pattern '{pattern}', answer the question: {query_text}
+
+Use the Glob tool to find files matching the pattern, then use Read or Grep to search for relevant information."""
 
     tools_used = False
     last_message_text = []
-    
+
     async for message in query(
         prompt=prompt,
         options=options,
@@ -123,28 +127,29 @@ async def get_claude_answer(filename, query_text):
                 elif isinstance(block, ToolResultBlock):
                     if block.is_error:
                         print(f"❌ Error: {block.content}")
-            
+
             # Only keep text from the last message (final answer)
             if current_message_text:
                 last_message_text = current_message_text
-                
+
         elif isinstance(message, ResultMessage) and message.total_cost_usd > 0:
             print(f"Cost: ${message.total_cost_usd:.4f}")
-    
+
     # Return the final answer
     return ' '.join(last_message_text) if last_message_text else "No answer generated"
 
 @click.command()
 @click.option("-i", "--input-file", required=True, help="JSON file containing questions and expected answers")
-@click.option("-q", "--questions-file", required=True, help="Source file to query for answers")
-def main(input_file, questions_file):
+@click.option("-d", "--source-dir", required=True, help="Directory containing source files to query")
+@click.option("-p", "--pattern", default="*.md", help="File pattern to match (default: *.md)")
+def main(input_file, source_dir, pattern):
     """Process a JSON file with questions and generate results with Claude answers."""
     async def run_processing():
         time_start = time.time()
-        await process_questions_json(input_file, questions_file)
+        await process_questions_json(input_file, source_dir, pattern)
         time_end = time.time()
         print(f"\nTotal time taken: {time_end - time_start:.2f} seconds")
-    
+
     anyio.run(run_processing)
 
 
