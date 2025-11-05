@@ -55,15 +55,22 @@ This project provides a complete pipeline for:
 
 ### 1. Basic Question Answering
 
-Process a single question against a source document:
+Process questions against source documents in a directory:
 
 ```bash
-python file_query.py -i data/questions_answers.json -q data/2507.13334v2.md
+python file_query.py -i data/questions_answers.json -d data/
+```
+
+Or specify a custom pattern:
+
+```bash
+python file_query.py -i data/questions_answers.json -d data/ -p "*.md"
 ```
 
 **Parameters**:
 - `-i, --input-file`: JSON file containing questions and expected answers
-- `-q, --questions-file`: Source file to query for answers
+- `-d, --source-dir`: Directory containing source files to query
+- `-p, --pattern`: File pattern to match (default: `*.md`)
 
 ### 2. Answer Evaluation
 
@@ -83,8 +90,8 @@ python evaluate_answers.py -i data/questions_answers_results.json
 Run the complete pipeline:
 
 ```bash
-# Step 1: Generate answers
-python file_query.py -i data/questions_answers.json -q data/2507.13334v2.md
+# Step 1: Generate answers from all markdown files in data/ directory
+python file_query.py -i data/questions_answers.json -d data/
 
 # Step 2: Evaluate answers
 python evaluate_answers.py -i data/questions_answers_results.json
@@ -176,9 +183,10 @@ Processing question 1/10
 Question: What foundational shift in AI necessitated the evolution of prompt engineering?
 ============================================================
 
+🔧 Tool Use: Glob
+   Input: {"pattern": "*.md", "path": "data/"}
 🔧 Tool Use: Read
    Input: {"path": "data/2507.13334v2.md"}
-   Result: [Document content...]
 
 Claude: Based on the document, the foundational shift occurred when Large Language Models evolved from simple instruction-following systems into core reasoning engines of complex applications...
 
