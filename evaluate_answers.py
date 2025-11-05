@@ -74,7 +74,7 @@ Provide a brief reasoning for your scores.
 
         try:
             response = self.openai_client.beta.chat.completions.parse(
-                model="gpt-4o-mini",
+                model="gpt-5-mini",
                 messages=[{"role": "user", "content": prompt}],
                 response_format=EvaluationResult,
                 # temperature=0.1,
