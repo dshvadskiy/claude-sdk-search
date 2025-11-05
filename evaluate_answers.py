@@ -74,7 +74,7 @@ Provide a brief reasoning for your scores.
 
         try:
             response = self.openai_client.beta.chat.completions.parse(
-                model="gpt-5-mini",
+                model="gpt-4o-mini",
                 messages=[{"role": "user", "content": prompt}],
                 response_format=EvaluationResult,
                 # temperature=0.1,
@@ -195,7 +195,7 @@ def main(input_file: str, output_file: str, api_key: str):
         print("\n" + "="*60)
         print("EVALUATION SUMMARY")
         print("="*60)
-        print(f"Total Questions: {aggregate_scores['average_accuracy_score']}")
+        print(f"Total Questions: {aggregate_scores['total_questions']}")
         print(f"Average Accuracy Score: {aggregate_scores['average_accuracy_score']:.3f}")
         print(f"Average Completeness Score: {aggregate_scores['average_completeness_score']:.3f}")
         print(f"Min Accuracy Score: {aggregate_scores['min_accuracy_score']:.3f}")
